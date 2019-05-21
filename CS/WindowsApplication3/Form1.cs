@@ -1,3 +1,4 @@
+using DevExpress.XtraGrid.Views.Grid;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -12,17 +13,23 @@ namespace WindowsApplication3 {
         public Form1() {
             InitializeComponent();
         }
-        public void InitData() {
-            for(int i = 0;i < 5;i++) {
-                dataSet11.Tables[0].Rows.Add(new object[] { i, "a/b/c/d", i, imageList1.Images[i], DateTime.Today });
-            }
-        }
-
+        
         private void Form1_Load(object sender, EventArgs e) {
-            InitData();
+            DataHelper helper = new DataHelper(imageList1);
+            DataSet dataSet1 = new DataSet();
+            dataSet1.Tables.Add(helper.CreateTable());
+            dataSet1.Tables.Add(helper.CreateEmptyTable());
+            DataColumn keyColumn = dataSet1.Tables[0].Columns["CustomerID"];
+            DataColumn foreignKeyColumn = dataSet1.Tables[1].Columns["CustomerID"];
+            dataSet1.Relations.Add("CustomerInfo_CustomerInfo1", keyColumn, foreignKeyColumn);
+            gridControl1.DataSource = dataSet1.Tables[0];
+
             RepositoryItemCustomEdit edit = new RepositoryItemCustomEdit();
             gridControl1.RepositoryItems.Add(edit);
             colFirstName.ColumnEdit = edit;
+           
         }
+
+        
     }
 }
